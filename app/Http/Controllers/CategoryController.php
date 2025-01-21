@@ -13,16 +13,26 @@ class CategoryController extends Controller
      */
     public function index()
     {
+        $this->authorize("manageUser",User::class);
         $categories=Category::all();
-        return response()->json(["message"=>"this is all categories",$categories],200);
+        return view("categories.index",compact("categories"));
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        $this->authorize("manageUser",User::class);
+        return view("categories.create");
+    }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
+        $this->authorize("manageUser",User::class);
         $request->validate([
             "title"=>"required|string",
             "image_category"=>"required",
@@ -31,34 +41,37 @@ class CategoryController extends Controller
             $imageName=$request->file("image_category")->getClientOriginalName()."-".time().".".$request->file("image_category")->getClientOriginalExtension();
             $request->file("image_category")->move(public_path("/images/categories"),$imageName);
         }
-        $category=Category::create([
+        Category::create([
             "title"=>$request->title,
             "image_category"=>$imageName
         ]);
-        return response()->json(["message"=>"category added successfully","category"=>$category],200);
+        return redirect()->route("categories.index");
     }
 
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show(category $category)
     {
-        $category=Category::find($id);
-        if(!$category){
-            return response()->json(["message"=>"category not found"],404);
-        }
-        return response()->json(["message"=>"show category successfuly","category"=>$category],200);
+        $this->authorize("manageUser",User::class);
+        return view('categories.show', compact('category'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(category $category)
+    {
+        $this->authorize("manageUser",User::class);
+        return view('categories.edit', compact('category'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, category $category)
     {
-        $category=Category::find($id);
-        if(!$category){
-            return response()->json(["message"=>"category not found"],404);
-        }
+        $this->authorize("manageUser",User::class);
         if($request->hasFile("image_category")){
             $request->validate([
                 "title"=>"required|string",
@@ -82,24 +95,21 @@ class CategoryController extends Controller
             'image_category' => $imageName
         ]);
 
-        return response()->json(["message"=>"category updated successfuly","category"=>$category],200); 
+        return redirect()->route('categories.index'); 
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(category $category)
     {
-        $category=Category::find($id);
-        if(!$category){
-            return response()->json(["message"=>"category not found"],404);
-        }
+        $this->authorize("manageUser",User::class);
         $image_path=public_path("/images/categories/".$category->image_category);
              if(file_exists($image_path))
               {
                unlink($image_path);
               }
         $category->delete();
-        return response()->json(["message"=>"category deleted successfully"],200);
+        return redirect()->route('categories.index');
     }
 }
