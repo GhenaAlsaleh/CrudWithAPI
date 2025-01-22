@@ -14,7 +14,7 @@ class AuthController extends Controller
     public function login(Request $request){
         if(Auth::attempt(["email"=>$request->email,"password"=>$request->password])){
             $request->session()->regenerate();
-            return redirect()->route("users.dashboard");
+            return view("users.dashboard");
         }
         return back()->withErrors(["message"=>"invalid email or password"]);
     }

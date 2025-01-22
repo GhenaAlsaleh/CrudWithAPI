@@ -17,7 +17,7 @@ Route::middleware(["auth:sanctum"])->group(function()
 Route::post("/logout",[AuthController::class,"logout"]);
 
 
-Route::post('/comments/{post}', [CommentApiController::class,"store"]);
+Route::post('/comments/{id}', [CommentApiController::class,"store"]);
 Route::get('/comments/{id}', [CommentApiController::class,"show"]);
 Route::put('/comments/{id}', [CommentApiController::class,"update"]);
 Route::delete('/comments/{id}', [CommentApiController::class,"destroy"]);

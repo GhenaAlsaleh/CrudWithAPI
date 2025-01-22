@@ -1,12 +1,12 @@
 @extends('layouts.app')
 @section("title","users")
 @section("content")
-
+<div class="container d-flex mt-5 mb-5 justify-content-evenly flex-wrap">
  @forelse($users as $user)
-  <div class="card">
+  <div class="card mt-5 mb-5 ">
     <div class="card-header">
     <figure>
-    <img style="width:7%" class="rounded float-start" src="/images/users/{{$user->image}}">
+    <img style="width:20%" class="rounded float-start" src="/images/users/{{$user->image}}">
     <h3>{{$user->name}}</h3>
     </div>
     <div class="card-body">
@@ -21,9 +21,15 @@
       @method('DELETE')
       <button type="submit" class="btn btn-danger">delete user</button>
     </form>
+    @if($user->status=='Active')
+    <a href="{{URL::to('changeUserStatus/Blocked/'.$user->id)}}" class="btn btn-secondary mt-5 mb-5">Block</a>
+    @else
+    <a href="{{URL::to('changeUserStatus/Active/'.$user->id)}}" class="btn btn-success mt-5 mb-5">Un-Block</a>
+    @endif
   </div>
-</div>
+</div> 
   @empty
    <h1>there is no users</h1>
   @endforelse
+</div>
   @endsection

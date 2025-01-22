@@ -13,7 +13,7 @@ class UserController extends Controller
     public function index()
     {
         $this->authorize("manageUser",User::class);
-        $users=User::all();
+        $users=User::whereNot('id',auth()->id())->get();
         return view("users.index",compact("users"));
     }
 
@@ -164,7 +164,16 @@ class UserController extends Controller
 
     public function dashboard()
     {
-    
+        $this->authorize("manageUser",User::class);
         return view("users.dashboard");
+    }
+
+    public function changeUserStatus($status,$id)
+    {
+        $this->authorize("manageUser",User::class);
+        $user=User::find($id);
+        $user->status=$status;
+        $user->save();
+        return redirect()->back()->with('success','user change status successfuly');
     }
 }

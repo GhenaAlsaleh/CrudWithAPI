@@ -5,10 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Models\User;
-use App\Models\tag;
+use App\Models\Tag;
 use App\Models\category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PostApiController extends Controller
 {
@@ -22,12 +23,15 @@ class PostApiController extends Controller
             $user=User::find($post->user_id);
             $category=Category::find($post->category_id);
             $tags_post=$post->tags;
+            $basePath="/storage";
+            $imagePath=$post->image;
+            $imag=url("$basePath/$imagePath");
             return[
                 'post_id'=>$post->id,
                 'user'=>$user->name,
                 'title'=>$post->title,
                 'description'=>$post->description,
-                'image'=>$post->image_url,
+                'image'=>$imag,
                 'category'=>$category->title,
                 'created_at'=>$post->created_at,
                 'tags_post'=>$tags_post->map(function($tag_post){
@@ -53,15 +57,14 @@ class PostApiController extends Controller
         $request->validate([
             "title"=>"required|string",
             "description"=>"required|string",
-            "image"=>"required|string",
+            "image"=>"required",
             "category_id"=>"required|integer",
             "tag_id" =>"required| array",
             "tag_id.*" => "required|integer"
         ]);
         
-        if($request->file("image")){ 
-            $imageName=$request->file("image")->store('images/posts',"public");
-        }
+        
+        $imageName=$request->file("image")->store('images/posts',"public");
    
         $post=new Post([
             'title'=>$request->title,
@@ -90,12 +93,15 @@ class PostApiController extends Controller
         $comments_post=$post->comments;
         $user=User::find($post->user_id);
             $category=Category::find($post->category_id);
+            $basePath="/storage";
+            $imagePath=$post->image;
+            $imag=url("$basePath/$imagePath");
             $post=[
                 'post_id'=>$post->id,
                 'user'=>$user->name,
                 'title'=>$post->title,
                 'description'=>$post->description,
-                'image'=>$post->image_url,
+                'image'=>$imag,
                 'category'=>$category->title,
                 'created_at'=>$post->created_at,
                 'tags_post'=>$tags_post->map(function($tag_post){
@@ -185,7 +191,7 @@ class PostApiController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Post $id)
+    public function destroy($id)
     {
         $post=Post::find($id);
         $this->authorize("sameUserpost",$post);
@@ -193,8 +199,8 @@ class PostApiController extends Controller
         if(!$post){
             return response()->json(["message"=>"post not found"],404);
         }
-         
-             $image_path=public_path("/images/posts/".$post->image);
+        
+            $image_path=public_path("/images/posts/".$post->image);
              if(file_exists($image_path))
               {
                unlink($image_path);

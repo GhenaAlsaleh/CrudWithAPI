@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use Illuminate\Support\Facades\Storage;
 
 class CategoryApiController extends Controller
 {
@@ -16,10 +16,13 @@ class CategoryApiController extends Controller
     {
         $categories=Category::all();
         $categories=$categories->map(function($category){
+            $basePath="/storage";
+            $imagePath=$category->image_category;
+            $image_cat= url("$basePath/$imagePath");
             return[
                 'id'=>$category->id,
                 'title'=>$category->title,
-                'image_category'=>$category->image_category_url,
+                'image_category'=>$image_cat,
                 'created_at'=>$category->created_at,
 
             ];
@@ -61,11 +64,14 @@ class CategoryApiController extends Controller
         if(!$category){
             return response()->json(["message"=>"category not found"],404);
         }
+        $basePath="/storage";
+        $imagePath=$category->image_category;
+        $image_cat= url("$basePath/$imagePath");
 
         $category=[
             'id'=>$category->id,
             'title'=>$category->title,
-            'image_category'=>$category->image_category_url,
+            'image_category'=>$image_cat,
             'created_at'=>$category->created_at,
         ];
         return response()->json(["message"=>"show category successfuly","category"=>$category],200);
@@ -88,7 +94,8 @@ class CategoryApiController extends Controller
             /*$imageName=$request->file("image_category")->getClientOriginalName()."-".time().".".$request->file("image_category")->getClientOriginalExtension();
             $request->file("image_category")->move(public_path("/images/categories"),$imageName);*/
             $imageName=$request->file("image_category")->store('images/categories',"public");
-            $image_path=public_path("/images/categories/".$category->image_category);
+            //Storage::delete("storage/app/public".$category->image_category);
+            $image_path=public_path("storage/app/public/images/categories/".$category->image_category);
              if(file_exists($image_path))
               {
                unlink($image_path);

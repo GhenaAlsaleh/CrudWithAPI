@@ -19,8 +19,9 @@ class AuthController extends Controller
                 "name"=>$request->name,
                 "email"=>$request->email,
                 "password"=>Hash::make($request->password),
+                "image"=>$request->image,
             ]);
-            $token=$user->creatToken($user->name."-AuthToken")->plainTextToken;
+            $token=$user->createToken($user->name."-AuthToken")->plainTextToken;
             $Data=[
                 "id"=>$user->id,
                 "name"=>$user->name,
@@ -35,11 +36,11 @@ class AuthController extends Controller
                 "email"=>"required|string|email",
                 "password"=>"required|string",
             ]);
-            $user=User::where()->first("email",$request->email);
+            $user=User::where("email",$request->email)->first();
             if(!$user || !Hash::check($request->password, $user->password)){
                 return response()->json(["message"=>"invalid credentials (password or email wrong)"],401);
             }
-            $token=$user->creatToken($user->name."-AuthToken")->plainTextToken;
+            $token=$user->createToken($user->name."-AuthToken")->plainTextToken;
             $Data=[
                 "id"=>$user->id,
                 "name"=>$user->name,
@@ -49,7 +50,7 @@ class AuthController extends Controller
             
     }
     public function logout(Request $request){
-        auth()->user->tokens()->delete();
+        auth()->user()->tokens()->delete();
         return response()->json(["message"=>"logged out"]);
         }
     

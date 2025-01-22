@@ -10,7 +10,7 @@
 <body class="container">
     <nav class="navbar navbar-expand-lg bg-body-tertiary" style="background-color: #e3f2fd;">
         <div class="container-fluid">
-          <a class="navbar-brand" href="{{route('users.dashboard')}}">
+          <a class="navbar-brand" href="#">
             <i class="fa-solid fa-blog"></i>
             Blog
           </a>
@@ -20,7 +20,7 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="{{route('users.dashboard')}}">Home</a>
+                <a class="nav-link active" aria-current="page" href="#">Home</a>
               </li>
               <li class="nav-item">
                 <form method="POST" action="{{ route('logout') }}" > 
