@@ -13,10 +13,16 @@ class AuthController extends Controller
     }
     public function login(Request $request){
         if(Auth::attempt(["email"=>$request->email,"password"=>$request->password])){
+            $user=Auth::user();
+            //$user = User::where('id',$userid)->where('status','Active')->first();
+            if($user->status=='Blocked'){
+                return back()->with("error", "You are blocked!");
+            }
             $request->session()->regenerate();
-            return view("users.dashboard");
+            return redirect()->route('posts.index');
+            
         }
-        return back()->withErrors(["message"=>"invalid email or password"]);
+        return back()->with("error", "invalid email or password!");
     }
     public function logout(Request $request){
         Auth::logout();

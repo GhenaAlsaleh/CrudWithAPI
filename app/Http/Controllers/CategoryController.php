@@ -37,11 +37,10 @@ class CategoryController extends Controller
             "title"=>"required|string",
             "image_category"=>"required",
         ]);
-        if($request->hasFile("image_category")){
+        
             $imageName=$request->file("image_category")->getClientOriginalName()."-".time().".".$request->file("image_category")->getClientOriginalExtension();
             $request->file("image_category")->move(public_path("/images/categories"),$imageName);
-        }
-        Category::create([
+            Category::create([
             "title"=>$request->title,
             "image_category"=>$imageName
         ]);

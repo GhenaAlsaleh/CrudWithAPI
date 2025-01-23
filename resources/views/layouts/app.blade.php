@@ -10,7 +10,7 @@
 <body class="container">
     <nav class="navbar navbar-expand-lg bg-body-tertiary" style="background-color: #e3f2fd;">
         <div class="container-fluid">
-          <a class="navbar-brand" href="#">
+          <a class="navbar-brand" href="{{ route('posts.index') }}">
             <i class="fa-solid fa-blog"></i>
             Blog
           </a>
@@ -20,7 +20,7 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Home</a>
+                <a class="nav-link active" aria-current="page" href="{{ route('posts.index') }}">Home</a>
               </li>
               <li class="nav-item">
                 <form method="POST" action="{{ route('logout') }}" > 
@@ -43,17 +43,17 @@
               </li>
               
               <li class="nav-item dropdown">
-                @can('manageUser',Auth::user())
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   Add New
                 </a>
                 <ul class="dropdown-menu">
+                  @can('manageUser',Auth::user())
                   <li><a class="dropdown-item" href="{{route('users.create')}}">Add new user</a></li>
                   <li><a class="dropdown-item" href="{{route('categories.create')}}">Add new category</a></li>
                   <li><hr class="dropdown-divider"></li>
                   <li><a class="dropdown-item" href="{{route('tags.create')}}">Add new tag</a></li>
+                  @endcan
                 </ul>
-                @endcan
               </li>
               <li class="nav-item">
                 <a class="nav-link disabled" aria-disabled="true">@Ghena</a>

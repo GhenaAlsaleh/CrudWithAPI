@@ -11,7 +11,7 @@ class Category extends Model
         'image_category'
     ];
 
-    public function getImage_categoryUrlAtrribute(){
+   public function getImage_categoryUrlAtrribute(){
         if($this->image_category){
             $basePath="/storage";
             $imagePath=$this->image_category;
